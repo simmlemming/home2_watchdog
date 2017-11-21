@@ -29,7 +29,7 @@ def on_mqtt_message(client, userdata, msg):
 def on_message(message):
     if message.get('state') == 4:
         log.i("alarm!")
-        notifier.notify("Alarm")
+        notifier.notify(json.dumps(message))
 
     if message.get('cmd') == 'add_device':
         try:
