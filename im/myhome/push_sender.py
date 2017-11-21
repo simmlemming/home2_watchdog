@@ -1,4 +1,4 @@
-from im.myhome.config import PUSH_API_KEY
+from im.myhome.config import push_server_key
 import im.myhome.log as log
 import urllib.request as http
 import urllib.error
@@ -35,10 +35,13 @@ def process_response(status_code, response_body):
 
 
 def send_to_one(token, message):
-    headers = {'Authorization': 'key=' + PUSH_API_KEY, 'Content-Type': 'application/json'}
-    body = dict(to=token, data=dict(message=message))
+    headers = {
+        'Authorization': 'key=' + push_server_key,
+        'Content-Type': 'application/json; UTF-8',
+    }
 
-    request = http.Request('https://gcm-http.googleapis.com/gcm/send',
+    body = dict(to=token, data=dict(message=message))
+    request = http.Request('https://fcm.googleapis.com/fcm/send',
                            json.dumps(body).encode('utf-8'), headers=headers)
     try:
         response = http.urlopen(request)
@@ -51,9 +54,10 @@ def send_to_one(token, message):
         error_message = e.read().decode('utf-8')
         return e.getcode(), error_message
 
+
 if __name__ == "__main__":
     log.init()
-    t = "dN94xGA5m0Y:APA91bFvqn8y758yfyX8ugqQShee_RVHCb8cMFkvijeDZNXTyrBnzTdVpApNTu6uvp81gv039YUN4RB-He9Tsby2uZqFbK_WPk8IJChQgFYEk_S5BmiwB82izKE8K_tbM99sIAgMimbf"
+    t = "eJnbKeoRV4o:APA91bGZ7H0E9PUFI-rD96VAL4jMnpUn7_1wfgt8ofXT0noHGxihR9FsAKfCCypleg5VsSaTT37bAaSvHUoj3DL-0YIEm9Eep25r45vHov0A0eRBUTicfbNLBgM_wl3b1QXIJhJsVJpe"
     m = dict(data=dict(message_id="qwe"))
 
     send_to_all([('d1', t)], json.dumps(m))
