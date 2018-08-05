@@ -10,8 +10,8 @@ class StorageTest(unittest.TestCase):
         utils.rm('tmp.db')
 
     def test_token_update(self):
-        device_1 = dict(device_name='d1', device_token='t1')
-        device_2 = dict(device_name='d2', device_token='t2')
+        device_1 = dict(name='d1', token='t1')
+        device_2 = dict(name='d2', token='t2')
 
         storage.add_device(device_1)
         devices = storage.get_all_devices()
@@ -21,7 +21,7 @@ class StorageTest(unittest.TestCase):
         devices = storage.get_all_devices()
         self.assertEqual(2, len(devices))
 
-        device_1['device_token'] = 't_updated'
+        device_1['token'] = 't_updated'
         storage.add_device(device_1)
         devices = storage.get_all_devices()
         self.assertEqual(2, len(devices))
