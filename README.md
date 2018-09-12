@@ -1,5 +1,9 @@
 # home2_watchdog
 
+## ADR
+1. One Input mqtt channel is used by all devices. Also, output channel is the same for all communication.
+1. All commands result in status response.
+
 ## Protocol
 ```json
 {"name": "temp_01",
@@ -10,6 +14,26 @@
 "cmd": "reset",
 "signal": "..."}
 ```
+#### Examples
+Status message
+```json
+    {
+        "name": "motion_01",
+        "room": "living_room",
+        "type": "motion_sensor",
+        "state": 4,
+        "signal": "..."
+    }
+```
+Command message
+```json
+    {
+        "name": "living_motion_1",
+        "cmd": "reset"
+    }
+```
+
+name in command can be `all`, all devices will respond.
 
 ## Types
 ```
