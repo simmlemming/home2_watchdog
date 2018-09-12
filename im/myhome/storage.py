@@ -1,5 +1,7 @@
 import sqlite3
 from sqlite3 import OperationalError
+from im.myhome.utils import file_for_picture
+
 
 DATABASE_FILE_NAME = 'db.sqlite'
 LAST_UPDATE_FILE_NAME = 'last_update.json'
@@ -33,3 +35,12 @@ def add_device(device):
 
     if not added:
         raise OperationalError
+
+
+def save_picture(camera_index, picture):
+    file_with_picture = file_for_picture(camera_index)
+
+    with open(file_with_picture, 'wb') as f:
+        f.write(picture)
+
+    return file_with_picture

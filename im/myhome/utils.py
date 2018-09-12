@@ -1,4 +1,5 @@
 import os
+import datetime
 
 
 def validate_device(token):
@@ -10,3 +11,14 @@ def rm(file):
         os.remove(file)
     except FileNotFoundError:
         pass
+
+
+def file_for_picture(camera_index):
+    timestamp = datetime.datetime.today().isoformat()
+    file_with_picture = './p/' + camera_index + '_' + timestamp + '.jpg'
+
+    dir_with_pictures = os.path.dirname(file_with_picture)
+    if not os.path.exists(dir_with_pictures):
+        os.makedirs(dir_with_pictures)
+
+    return os.path.abspath(file_with_picture)
