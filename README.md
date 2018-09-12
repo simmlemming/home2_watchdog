@@ -12,8 +12,11 @@
 "state": 1,
 "value": 24,
 "cmd": "reset",
+"device": "<FCM token>",
 "signal": "..."}
 ```
+Note: `device` is deprecated, `value` should be used instaed.
+
 #### Examples
 Status message
 ```json
@@ -35,6 +38,7 @@ Command message
 
 name in command can be `all`, all devices will respond.
 
+
 ## Types
 ```
 type = ["temp_sensor" | "humidity_sensor" | "motion_sensor"]
@@ -42,7 +46,7 @@ type = ["temp_sensor" | "humidity_sensor" | "motion_sensor"]
 
 ## Commands
 ```
-cmd = ["on" | "off" | "reset" | "state"]
+cmd = ["on" | "off" | "reset" | "state" | "add_device" ]
 ```
 
 ## States
