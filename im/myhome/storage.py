@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3 import OperationalError
-from im.myhome.utils import file_for_picture
+from im.myhome.utils import file_for_picture, file_for_picture_with_filename
 
 
 DATABASE_FILE_NAME = 'db.sqlite'
@@ -44,3 +44,10 @@ def save_picture(camera_index, picture):
         f.write(picture)
 
     return file_with_picture
+
+
+def get_picture_by_name(file_name):
+    with open(file_for_picture_with_filename(file_name), 'rb') as f:
+        picture = f.read()
+
+    return picture

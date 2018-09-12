@@ -13,6 +13,10 @@ def rm(file):
         pass
 
 
+def file_for_picture_with_filename(file_name):
+    return os.path.abspath('./p/' + file_name)
+
+
 def file_for_picture(camera_index):
     timestamp = datetime.datetime.today().isoformat()
     file_with_picture = './p/' + camera_index + '_' + timestamp + '.jpg'
