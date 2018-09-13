@@ -3,6 +3,7 @@ from http import HTTPStatus
 import im.myhome.log as log
 import im.myhome.storage as storage
 from urllib.parse import urlparse, parse_qs
+import json
 
 
 class PicturesHandler(BaseHTTPRequestHandler):
@@ -20,7 +21,7 @@ class PicturesHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_POST(self):
         if self.path.startswith('/p/'):  # TODO: use regex to match '/p/[0-9]+'
-            code, message, path = self.__save_picture()
+            code, message = self.__save_picture()
         else:
             code, message = HTTPStatus.NOT_FOUND, 'Unknown path: ' + self.path
 
@@ -60,26 +61,26 @@ class PicturesHandler(BaseHTTPRequestHandler):
         path_segments = self.path.split('/')
 
         if len(path_segments) < 3:
-            return HTTPStatus.BAD_REQUEST, 'No camera index in the path', None
+            return HTTPStatus.BAD_REQUEST, 'No camera index in the path'
 
         camera_index = path_segments[2]
         if not camera_index:
-            return HTTPStatus.BAD_REQUEST, 'No camera index in the path', None
+            return HTTPStatus.BAD_REQUEST, 'No camera index in the path'
 
         mime_type = self.headers['Content-Type']
         if mime_type != 'image/jpeg':
-            return HTTPStatus.UNSUPPORTED_MEDIA_TYPE, "Only image/jpeg is supported", None
+            return HTTPStatus.UNSUPPORTED_MEDIA_TYPE, 'Only image/jpeg is supported, was ' + mime_type
 
         length = self.headers['content-length']
         picture = self.rfile.read(int(length))
 
         try:
-            path = storage.save_picture(camera_index, picture)
+            file_name = storage.save_picture(camera_index, picture)
+            body = dict(filename=file_name)
+            return HTTPStatus.OK, json.dumps(body)
         except Exception as e:
             log.e(str(e))
-            return HTTPStatus.INTERNAL_SERVER_ERROR, str(e), None
-
-        return HTTPStatus.OK, 'OK', path
+            return HTTPStatus.INTERNAL_SERVER_ERROR, str(e)
 
     def __send_bytes(self, code, body, content_type='text/json'):
         self.send_response(code)

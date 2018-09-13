@@ -45,7 +45,7 @@ def save_picture(camera_index, picture):
     with open(file_with_picture, 'wb') as f:
         f.write(picture)
 
-    return file_with_picture
+    return os.path.basename(file_with_picture)
 
 
 def get_picture_by_name(file_name):
