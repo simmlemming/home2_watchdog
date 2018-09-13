@@ -1,6 +1,8 @@
 import os
 import datetime
 
+DATE_FORMAT = '%Y-%m-%d-%H-%M-%S'
+
 
 def validate_device(token):
     return ('device_token' in token) & ('device_name' in token)
@@ -22,7 +24,7 @@ def dir_for_pictures():
 
 
 def file_for_picture(camera_index):
-    timestamp = datetime.datetime.today().isoformat()
+    timestamp = datetime.datetime.today().strftime(DATE_FORMAT)
     file_with_picture = './p/' + camera_index + '.' + timestamp + '.jpg'
 
     dir_with_pictures = os.path.dirname(file_with_picture)

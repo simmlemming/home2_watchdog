@@ -37,7 +37,8 @@ class PicturesHandler(BaseHTTPRequestHandler):
                 picture = storage.get_picture_by_name(filename)
             elif timestamp and camera_index:
                 picture = storage.get_picture_by_timestamp(camera_index, timestamp)
-        except Exception:
+        except Exception as e:
+            log.e(str(e))
             return HTTPStatus.INTERNAL_SERVER_ERROR, None
 
         if picture:
@@ -75,6 +76,7 @@ class PicturesHandler(BaseHTTPRequestHandler):
         try:
             path = storage.save_picture(camera_index, picture)
         except Exception as e:
+            log.e(str(e))
             return HTTPStatus.INTERNAL_SERVER_ERROR, str(e), None
 
         return HTTPStatus.OK, 'OK', path

@@ -3,6 +3,7 @@ from sqlite3 import OperationalError
 from im.myhome.utils import file_for_picture, file_for_picture_with_filename, dir_for_pictures
 import datetime
 import os
+from im.myhome.utils import DATE_FORMAT
 
 DATABASE_FILE_NAME = 'db.sqlite'
 LAST_UPDATE_FILE_NAME = 'last_update.json'
@@ -55,15 +56,14 @@ def get_picture_by_name(file_name):
 
 
 def get_picture_by_timestamp(camera_index, timestamp):
-    requested_timestamp = datetime.datetime.fromisoformat(timestamp)
+    requested_timestamp = datetime.datetime.strptime(timestamp, DATE_FORMAT)
     picture_files = [f for f in os.listdir(dir_for_pictures()) if f.split('.')[0] == camera_index]
     picture_files.sort(key=__timestamp)
 
     requested_file = None
 
     for picture_file in picture_files:
-        timestamp_of_file_str = picture_file.split('.')[1]
-        timestamp_of_file = datetime.datetime.fromisoformat(timestamp_of_file_str)
+        timestamp_of_file = __timestamp(picture_file)
 
         if requested_timestamp > timestamp_of_file:
             requested_file = picture_file
@@ -79,4 +79,4 @@ def get_picture_by_timestamp(camera_index, timestamp):
 
 def __timestamp(file_name):
     timestamp_str = file_name.split('.')[1]
-    return datetime.datetime.fromisoformat(timestamp_str)
+    return datetime.datetime.strptime(timestamp_str, DATE_FORMAT)
