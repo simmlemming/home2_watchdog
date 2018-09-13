@@ -17,9 +17,13 @@ def file_for_picture_with_filename(file_name):
     return os.path.abspath('./p/' + file_name)
 
 
+def dir_for_pictures():
+    return os.path.abspath('./p')
+
+
 def file_for_picture(camera_index):
     timestamp = datetime.datetime.today().isoformat()
-    file_with_picture = './p/' + camera_index + '_' + timestamp + '.jpg'
+    file_with_picture = './p/' + camera_index + '.' + timestamp + '.jpg'
 
     dir_with_pictures = os.path.dirname(file_with_picture)
     if not os.path.exists(dir_with_pictures):

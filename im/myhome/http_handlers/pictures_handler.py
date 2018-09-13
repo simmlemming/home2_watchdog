@@ -10,14 +10,11 @@ class PicturesHandler(BaseHTTPRequestHandler):
     # noinspection PyPep8Naming
     def do_GET(self):
         if self.path.startswith('/p'):
-            code, picture, message = self.__get_picture()
-        else:
-            code, picture, message = HTTPStatus.NOT_FOUND, None, 'Unknown path: ' + self.path
-
-        if picture:
+            code, picture = self.__get_picture()
             self.__send_bytes(code, picture, content_type='image/jpeg')
-        else:
-            self.__send(code, message, content_type='text/plain')
+            return
+
+        self.__send(HTTPStatus.NOT_FOUND, 'Unknown path: ' + self.path, content_type='text/plain')
 
     # curl -H "Content-Type: image/jpeg" --data-binary @"./cat.jpg" http://127.0.0.1:8080/p/1
     # noinspection PyPep8Naming
@@ -30,18 +27,33 @@ class PicturesHandler(BaseHTTPRequestHandler):
         self.__send(code, message, content_type='text/plain')
 
     def __get_picture(self):
+        filename = self.__get_query_param('filename')
+        timestamp = self.__get_query_param('timestamp')
+        camera_index = self.__get_query_param('camera_index')
+
+        picture = None
+        try:
+            if filename:
+                picture = storage.get_picture_by_name(filename)
+            elif timestamp and camera_index:
+                picture = storage.get_picture_by_timestamp(camera_index, timestamp)
+        except Exception:
+            return HTTPStatus.INTERNAL_SERVER_ERROR, None
+
+        if picture:
+            return HTTPStatus.OK, picture
+
+        return HTTPStatus.NOT_FOUND, None
+
+    def __get_query_param(self, key):
         query_str = urlparse(self.path).query
         query = parse_qs(query_str)
 
-        filename = query.get('filename')
-        if filename and len(filename) > 0:
-            try:
-                picture = storage.get_picture_by_name(filename[0])
-                return HTTPStatus.OK, picture, None
-            except Exception as e:
-                return HTTPStatus.INTERNAL_SERVER_ERROR, None, str(e)
+        value = query.get(key)
+        if value and len(value) > 0:
+            return value[0]
 
-        return HTTPStatus.BAD_REQUEST, None, 'No file name'
+        return None
 
     def __save_picture(self):
         path_segments = self.path.split('/')
@@ -71,7 +83,8 @@ class PicturesHandler(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header('Content-type', content_type)
         self.end_headers()
-        self.wfile.write(body)
+        if body:
+            self.wfile.write(body)
 
     def __send(self, code, message, content_type='text/json'):
         self.__send_bytes(code, bytes(message, encoding='utf8'), content_type)
