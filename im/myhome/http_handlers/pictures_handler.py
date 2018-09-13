@@ -5,7 +5,7 @@ import im.myhome.storage as storage
 from urllib.parse import urlparse, parse_qs
 
 
-class UploadImageHandler(BaseHTTPRequestHandler):
+class PicturesHandler(BaseHTTPRequestHandler):
 
     # noinspection PyPep8Naming
     def do_GET(self):

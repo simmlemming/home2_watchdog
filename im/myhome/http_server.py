@@ -1,6 +1,6 @@
 from http.server import HTTPServer
 import im.myhome.log as log
-from im.myhome.http_handlers.upload_image import UploadImageHandler
+from im.myhome.http_handlers.pictures_handler import PicturesHandler
 # from org.home.server.request_handler import HomeRequestHandler
 import signal
 import threading
@@ -37,7 +37,7 @@ def main():
     log.init()
     signal.signal(signal.SIGTERM, shutdown_server)
 
-    server = HTTPServer((ip_address, ip_port), UploadImageHandler)
+    server = HTTPServer((ip_address, ip_port), PicturesHandler)
     log.i('*** Started on {0}:{1} ***'.format(ip_address, ip_port))
 
     try:
